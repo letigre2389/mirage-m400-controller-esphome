@@ -1,55 +1,51 @@
 #include "mirage_m400.h"
 #include "esphome/core/log.h"
+#include <sstream>
+#include <iomanip>
 
 namespace esphome {
 namespace mirage_m400 {
 
+static const char *const TAG = "mirage_m400";
+
 void MirageM400Component::setup() {
-  ESP_LOGI(TAG, "Mirage M-400 component initialized");
+  ESP_LOGI(TAG, "Setting up Mirage M-400 component");
 }
 
 void MirageM400Component::loop() {
-  // Read responses from the amplifier
-  while (this->available()) {
-    uint8_t byte = this->read();
-    this->response_buffer_ += (char)byte;
-
-    // Check for end of response (carriage return or newline)
+  while (available()) {
+    uint8_t byte = read();
     if (byte == '\r' || byte == '\n') {
-      if (this->response_buffer_.length() > 0) {
-        // Remove trailing whitespace
-        this->response_buffer_.erase(
-            this->response_buffer_.find_last_not_of(" \n\r\t") + 1);
-        
-        ESP_LOGI(TAG, "Response: %s", this->response_buffer_.c_str());
-
-        // Call all response callbacks
-        for (auto &callback : this->response_callbacks_) {
-          callback(this->response_buffer_);
-        }
-
-        this->response_buffer_ = "";
+      if (!current_response_.empty()) {
+        last_response = current_response_;
+        response_buffer_.push(current_response_);
+        ESP_LOGD(TAG, "Response received: %s", current_response_.c_str());
+        current_response_.clear();
       }
+    } else {
+      current_response_ += static_cast<char>(byte);
     }
   }
 }
 
-void MirageM400Component::dump_config() {
-  ESP_LOGCONFIG(TAG, "Mirage M-400:");
+void MirageM400Component::send_command(const std::string &command) {
+  write_str(command.c_str());
+  write_byte('\r');
+  delay(50);
+  ESP_LOGD(TAG, "Command sent: %s", command.c_str());
 }
 
-void MirageM400Component::send_command(const char *command) {
-  // Add carriage return to command if not present
-  std::string cmd(command);
-  if (cmd.back() != '\r') {
-    cmd += '\r';
-  }
+void MirageM400Component::register_number(MirageM400Number *number_entity, uint8_t zone) {
+  number_entity->set_zone(zone);
+  numbers_.push_back(number_entity);
+}
 
-  this->write_str(cmd.c_str());
-  ESP_LOGI(TAG, "Sent command: %s", command);
-
-  // Add small delay to ensure transmission
-  delay(50);
+void MirageM400Number::control(float value) {
+  std::ostringstream ss;
+  ss << "04" << std::setfill('0') << std::setw(2) << std::hex << (int)zone_ 
+     << std::setfill('0') << std::setw(2) << std::hex << (int)value;
+  parent_->send_command(ss.str());
+  publish_state(value);
 }
 
 }  // namespace mirage_m400
