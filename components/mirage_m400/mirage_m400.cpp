@@ -48,5 +48,10 @@ void MirageM400Number::control(float value) {
   publish_state(value);
 }
 
+void MirageM400Component::register_switch(MirageM400Switch *switch_entity) {
+  switch_entity->set_parent(this);
+  switches_.push_back(switch_entity);
+}
+
 }  // namespace mirage_m400
 }  // namespace esphome
