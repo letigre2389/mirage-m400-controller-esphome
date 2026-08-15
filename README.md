@@ -202,11 +202,3 @@ Ensure the external component path is correct and all Python files are present.
 ### Conflicting ID Names
 
 Avoid using `mirage_m400` as the component ID; use `mirage_m400_device` instead.
-
-## Contributing
-
-<!-- TODO: Add contribution guidelines, issue reporting steps, and pull request procedures. -->
-
-## License
-
-MIT License — see [LICENSE](LICENSE) file for details.
