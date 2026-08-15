@@ -9,7 +9,7 @@ AUTO_LOAD = ["uart"]
 # Declare the namespace
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 
-# Declare all classes so ESPHome knows about them BEFORE generating main.cpp
+# Declare all classes
 MirageM400Component = mirage_m400_ns.class_(
     "MirageM400Component", cg.Component, uart.UARTDevice
 )
@@ -26,7 +26,7 @@ from . import text_sensor as text_sensor_
 from . import switch as switch_
 from . import number as number_
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(MirageM400Component),
         cv.GenerateID(CONF_UART_ID): cv.use_id(uart.UARTComponent),
@@ -34,7 +34,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional("switches"): cv.ensure_list(switch_.SWITCH_SCHEMA),
         cv.Optional("numbers"): cv.ensure_list(number_.NUMBER_SCHEMA),
     }
-).extend(cv.COMPONENT_SCHEMA)
+)
 
 
 async def to_code(config):
