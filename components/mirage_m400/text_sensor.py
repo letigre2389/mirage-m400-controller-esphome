@@ -9,8 +9,6 @@ DEPENDENCIES = ["mirage_m400"]
 
 MirageM400TextSensor = mirage_m400_ns.class_("MirageM400TextSensor", text_sensor.TextSensor)
 
-CONF_MIRAGE_M400_ID = "mirage_m400_id"
-
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
