@@ -2,101 +2,46 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
 from esphome.const import CONF_ID, CONF_TYPE
-
-from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
-
-DEPENDENCIES = ["mirage_m400"]
+from . import mirage_m400_ns, MirageM400Switch, CONF_MIRAGE_M400_ID
 
 CONF_ZONE = "zone"
 CONF_POWER = "power"
 CONF_MUTE = "mute"
 
-MirageM400Switch = mirage_m400_ns.class_("MirageM400Switch", switch.Switch)
-
-SWITCH_TYPES = {
-    CONF_POWER: cg.int(0),
-    CONF_MUTE: cg.int(1),
-}
-
-CONFIG_SCHEMA = switch.switch_schema(MirageM400Switch).extend(
+CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
-        cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
-        cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES, lower=True),
+        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Switch),
+        cv.Optional(CONF_POWER): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(MirageM400Switch),
+                cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
+            }
+        ),
+        cv.Optional(CONF_MUTE): switch.SWITCH_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(MirageM400Switch),
+                cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
+            }
+        ),
     }
 )
 
-async def to_code(config):
-    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    var = await switch.new_switch(config)
-    cg.add(parent.register_switch(var))
-    cg.add(var.set_zone(config[CONF_ZONE]))
-    cg.add(var.set_type(SWITCH_TYPES[config[CONF_TYPE]]))
-import esphome.codegen as cg
-import esphome.config_validation as cv
-from esphome.components import switch
-from esphome.const import CONF_ID, CONF_TYPE
-
-from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
-
-DEPENDENCIES = ["mirage_m400"]
-
-CONF_ZONE = "zone"
-CONF_POWER = "power"
-CONF_MUTE = "mute"
-
-MirageM400Switch = mirage_m400_ns.class_("MirageM400Switch", switch.Switch)
-
-SWITCH_TYPES = {
-    CONF_POWER: cg.int(0),
-    CONF_MUTE: cg.int(1),
-}
-
-CONFIG_SCHEMA = switch.switch_schema(MirageM400Switch).extend(
-    {
-        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
-        cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
-        cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES, lower=True),
-    }
-)
 
 async def to_code(config):
-    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    var = await switch.new_switch(config)
-    cg.add(parent.register_switch(var))
-    cg.add(var.set_zone(config[CONF_ZONE]))
-    cg.add(var.set_type(SWITCH_TYPES[config[CONF_TYPE]]))
-import esphome.codegen as cg
-import esphome.config_validation as cv
-from esphome.components import switch
-from esphome.const import CONF_ID, CONF_TYPE
+    # Power switches
+    if CONF_POWER in config:
+        for power_config in config[CONF_POWER]:
+            zone = power_config[CONF_ZONE]
+            var = cg.new_variable(power_config[cv.GenerateID()], MirageM400Switch())
+            await switch.register_switch(var, power_config)
+            cg.add(var.set_zone(cg.int(zone)))
+            cg.add(var.set_type(cg.int(0)))  # 0 = POWER
 
-from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
-
-DEPENDENCIES = ["mirage_m400"]
-
-CONF_ZONE = "zone"
-CONF_POWER = "power"
-CONF_MUTE = "mute"
-
-MirageM400Switch = mirage_m400_ns.class_("MirageM400Switch", switch.Switch)
-
-SWITCH_TYPES = {
-    CONF_POWER: MirageM400Switch,
-    CONF_MUTE: MirageM400Switch,
-}
-
-CONFIG_SCHEMA = switch.switch_schema(MirageM400Switch).extend(
-    {
-        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
-        cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
-        cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES, lower=True),
-    }
-)
-
-async def to_code(config):
-    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    var = await switch.new_switch(config)
-    cg.add(parent.register_switch(var))
-    cg.add(var.set_zone(config[CONF_ZONE]))
-    cg.add(var.set_type(config[CONF_TYPE]))
+    # Mute switches
+    if CONF_MUTE in config:
+        for mute_config in config[CONF_MUTE]:
+            zone = mute_config[CONF_ZONE]
+            var = cg.new_variable(mute_config[cv.GenerateID()], MirageM400Switch())
+            await switch.register_switch(var, mute_config)
+            cg.add(var.set_zone(cg.int(zone)))
+            cg.add(var.set_type(cg.int(1)))  # 1 = MUTE
