@@ -8,8 +8,8 @@ CODEOWNERS = ["@your_github_username"]
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400Component = mirage_m400_ns.class_("MirageM400Component", cg.Component, uart.UARTDevice)
 
-# Define the config key
 CONF_UART_ID = "uart_id"
+CONF_MIRAGE_M400_ID = "mirage_m400_id"
 
 CONFIG_SCHEMA = cv.Schema(
     {
