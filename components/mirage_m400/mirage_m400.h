@@ -2,32 +2,38 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
-#include "esphome/core/log.h"
+#include "esphome/components/number/number.h"
+#include <string>
+#include <queue>
 
 namespace esphome {
 namespace mirage_m400 {
 
-static const char *const TAG = "mirage_m400";
+class MirageM400Number : public number::Number, public Component {
+ public:
+  void set_parent(MirageM400Component *parent) { parent_ = parent; }
+  void set_zone(uint8_t zone) { zone_ = zone; }
+
+ protected:
+  void control(float value) override;
+  MirageM400Component *parent_;
+  uint8_t zone_;
+};
 
 class MirageM400Component : public Component, public uart::UARTDevice {
  public:
-  MirageM400Component(uart::UARTComponent *parent) : uart::UARTDevice(parent) {}
+  MirageM400Component() = default;
 
   void setup() override;
   void loop() override;
-  void dump_config() override;
+  void send_command(const std::string &command);
+  void register_number(MirageM400Number *number_entity, uint8_t zone);
+  std::string last_response;
 
-  void send_command(const char *command);
-
-  // Callbacks for response data
-  using response_callback_t = std::function<void(const std::string &)>;
-  void add_response_callback(response_callback_t callback) {
-    this->response_callbacks_.push_back(callback);
-  }
-
- protected:
-  std::vector<response_callback_t> response_callbacks_;
-  std::string response_buffer_;
+ private:
+  std::queue<std::string> response_buffer_;
+  std::string current_response_;
+  std::vector<MirageM400Number *> numbers_;
 };
 
 }  // namespace mirage_m400
