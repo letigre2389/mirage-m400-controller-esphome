@@ -4,7 +4,6 @@ from esphome.components import number
 from esphome.const import (
     CONF_ID,
     UNIT_PERCENT,
-    ICON_VOLUME_HIGH,
 )
 
 CODEOWNER = ["@yourusername"]
