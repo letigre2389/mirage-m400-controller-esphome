@@ -1,26 +1,29 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import number
-from esphome.const import CONF_ID, UNIT_PERCENT
+from esphome.const import CONF_ID
 
-CODEOWNER = ["@yourusername"]
-DEPENDENCIES = ["mirage_m400"]
+from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
 
-CONF_MIRAGE_M400_ID = "mirage_m400_id"
+MirageM400Number = mirage_m400_ns.class_("MirageM400Number", cg.Component)
+
 CONF_ZONE = "zone"
 
-mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
-MirageM400Number = mirage_m400_ns.class_("MirageM400Number", number.Number)
-
-CONFIG_SCHEMA = number.number_schema(MirageM400Number).extend(
+NUMBER_SCHEMA = number.NUMBER_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(cg.Component),
+        cv.GenerateID(): cv.declare_id(MirageM400Number),
+        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
         cv.Required(CONF_ZONE): cv.int_range(min=1, max=16),
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
 async def to_code(config):
-    var = await number.new_number(config, min_value=0, max_value=100, step=1)
-    mirage = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    cg.add(var.set_parent(mirage))
-    cg.add(mirage.register_number(var, config[CONF_ZONE]))
+    var = cg.new_variable(config[CONF_ID], MirageM400Number)
+    await cg.register_component(var, config)
+    
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    cg.add(parent.register_number(var))
+    cg.add(var.set_parent(parent))
+    cg.add(var.set_zone(config[CONF_ZONE]))
+    
+    await number.register_number(var, config)
