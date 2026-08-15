@@ -24,4 +24,3 @@ async def to_code(config):
     uart_component = await cg.get_variable(config[uart.CONF_UART_ID])
     var = cg.new_variable(config[CONF_ID], MirageM400Component)
     cg.add(var.set_uart_parent(uart_component))
-    cg.add(cg.register_component(var, config))
