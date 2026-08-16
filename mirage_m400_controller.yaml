@@ -1,171 +1,159 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2907
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+esphome:
+  name: mirage-m400-controller
+  friendly_name: mirage-m400-controller
 
-\f0\fs24 \cf0 # Board: Generic ESP32 Board (Generic)\
-# Definition: definitions/boards/generic-esp32/manifest.yaml\
-\
-esphome:\
-  name: mirage-m400-controller\
-  friendly_name: mirage-m400-controller\
-\
-esp32:\
-  variant: esp32\
-  framework:\
-    type: esp-idf\
-\
-wifi:\
-  ssid: !secret wifi_ssid\
-  password: !secret wifi_password\
-  ap:\
-    ssid: mirage-m400-con Fallback Hotspot\
-    password: "G2lGXEThtyoL"\
-\
-captive_portal:\
-\
-\
-# Enable logging\
-logger:\
-  level: DEBUG\
-\
-# Enable Home Assistant API\
-api:\
-  encryption:\
-    key: !secret api_encryption_key\
-  services:\
-    - service: send_mirage_command\
-      variables:\
-        command: string\
-      then:\
-        - lambda: |-\
-            id(mirage_m400_device)->send_command(command.c_str());\
-            ESP_LOGI("mirage_service", "Sent command: %s", command.c_str());\
-\
-ota:\
-\
-# UART Configuration for RS-232 connection\
-uart:\
-  - id: mirage_uart\
-    tx_pin: GPIO16\
-    rx_pin: GPIO17\
-    baud_rate: 9600\
-    data_bits: 8\
-    parity: NONE\
-    stop_bits: 1\
-\
-# External Component\
-external_components:\
-  - source: github://letigre2389/mirage-m400-controller-esphome\
-    components: [mirage_m400]\
-    \
-# External Component\
-mirage_m400:\
-  uart_id: mirage_uart\
-  id: mirage_m400_device\
-\
-# Text sensors for raw serial communication\
-text_sensor:\
-  - platform: mirage_m400\
-    name: "Mirage M-400 Last Response"\
-    id: mirage_last_response\
-    icon: mdi:serial-port\
-\
-# Switches for Zone Power Control (assuming 4 zones - adjust as needed)\
-switch:\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 1 Power"\
-    id: zone1_power\
-    zone: 1\
-    type: power\
-    icon: mdi:power\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 2 Power"\
-    id: zone2_power\
-    zone: 2\
-    type: power\
-    icon: mdi:power\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 3 Power"\
-    id: zone3_power\
-    zone: 3\
-    type: power\
-    icon: mdi:power\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 4 Power"\
-    id: zone4_power\
-    zone: 4\
-    type: power\
-    icon: mdi:power\
-\
-  # Mute switches for each zone\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 1 Mute"\
-    id: zone1_mute\
-    zone: 1\
-    type: mute\
-    icon: mdi:volume-off\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 2 Mute"\
-    id: zone2_mute\
-    zone: 2\
-    type: mute\
-    icon: mdi:volume-off\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 3 Mute"\
-    id: zone3_mute\
-    zone: 3\
-    type: mute\
-    icon: mdi:volume-off\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 4 Mute"\
-    id: zone4_mute\
-    zone: 4\
-    type: mute\
-    icon: mdi:volume-off\
-\
-# Number components for volume control per zone (0-100)\
-number:\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 1 Volume"\
-    id: zone1_volume\
-    zone: 1\
-    icon: mdi:volume-high\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 2 Volume"\
-    id: zone2_volume\
-    zone: 2\
-    icon: mdi:volume-high\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 3 Volume"\
-    id: zone3_volume\
-    zone: 3\
-    icon: mdi:volume-high\
-\
-  - platform: mirage_m400\
-    mirage_m400_id: mirage_m400_device\
-    name: "Zone 4 Volume"\
-    id: zone4_volume\
-    zone: 4\
+esp32:
+  variant: esp32
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: mirage-m400-con Fallback Hotspot
+    password: "G2lGXEThtyoL"
+
+captive_portal:
+
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+  services:
+    - service: send_mirage_command
+      variables:
+        command: string
+      then:
+        - lambda: |-
+            id(mirage_m400_device)->send_command(command.c_str());
+            ESP_LOGI("mirage_service", "Sent command: %s", command.c_str());
+
+ota:
+
+# UART Configuration for RS-232 connection
+uart:
+  - id: mirage_uart
+    tx_pin: GPIO16
+    rx_pin: GPIO17
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+
+# External Component
+external_components:
+  - source: github://letigre2389/mirage-m400-controller-esphome
+    components: [mirage_m400]
+    
+# External Component
+mirage_m400:
+  uart_id: mirage_uart
+  id: mirage_m400_device
+
+# Text sensors for raw serial communication
+text_sensor:
+  - platform: mirage_m400
+    name: "Mirage M-400 Last Response"
+    id: mirage_last_response
+    icon: mdi:serial-port
+
+# Switches for Zone Power Control (assuming 4 zones - adjust as needed)
+switch:
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 1 Power"
+    id: zone1_power
+    zone: 1
+    type: power
+    icon: mdi:power
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 2 Power"
+    id: zone2_power
+    zone: 2
+    type: power
+    icon: mdi:power
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 3 Power"
+    id: zone3_power
+    zone: 3
+    type: power
+    icon: mdi:power
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 4 Power"
+    id: zone4_power
+    zone: 4
+    type: power
+    icon: mdi:power
+
+  # Mute switches for each zone
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 1 Mute"
+    id: zone1_mute
+    zone: 1
+    type: mute
+    icon: mdi:volume-off
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 2 Mute"
+    id: zone2_mute
+    zone: 2
+    type: mute
+    icon: mdi:volume-off
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 3 Mute"
+    id: zone3_mute
+    zone: 3
+    type: mute
+    icon: mdi:volume-off
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 4 Mute"
+    id: zone4_mute
+    zone: 4
+    type: mute
+    icon: mdi:volume-off
+
+# Number components for volume control per zone (0-100)
+number:
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 1 Volume"
+    id: zone1_volume
+    zone: 1
+    icon: mdi:volume-high
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 2 Volume"
+    id: zone2_volume
+    zone: 2
+    icon: mdi:volume-high
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 3 Volume"
+    id: zone3_volume
+    zone: 3
+    icon: mdi:volume-high
+
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 4 Volume"
+    id: zone4_volume
+    zone: 4
     icon: mdi:volume-high}
