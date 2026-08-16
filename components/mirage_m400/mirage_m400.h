@@ -3,8 +3,6 @@
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/switch/switch.h"
-#include "esphome/components/number/number.h"
 
 namespace esphome {
 namespace mirage_m400 {
@@ -18,47 +16,34 @@ class MirageM400Component : public Component, public uart::UARTDevice {
   void send_command(const char *command);
   
   void register_text_sensor(text_sensor::TextSensor *sensor);
-  void register_switch(switch_::Switch *sw);
-  void register_number(number::Number *num);
+  void register_switch(void *sw);
+  void register_number(void *num);
 
  protected:
   std::vector<text_sensor::TextSensor *> text_sensors_;
-  std::vector<switch_::Switch *> switches_;
-  std::vector<number::Number *> numbers_;
+  std::vector<void *> switches_;
+  std::vector<void *> numbers_;
   
   void process_response_(const std::string &response);
 };
 
-class MirageM400TextSensor : public text_sensor::TextSensor {
+class MirageM400TextSensor {
  public:
-  // Empty for now; can extend later
+  uint8_t zone{1};
 };
 
-class MirageM400Switch : public switch_::Switch {
+class MirageM400Switch {
  public:
-  void set_zone(uint8_t zone) { zone_ = zone; }
-  void set_type(uint8_t type) { type_ = type; }  // 0 = power, 1 = mute
-  
- protected:
-  uint8_t zone_{1};
-  uint8_t type_{0};
-  
-  void write_state(bool state) override;
+  uint8_t zone{1};
+  uint8_t type{0};  // 0 = power, 1 = mute
 };
 
-class MirageM400Number : public number::Number {
+class MirageM400Number {
  public:
-  void set_zone(uint8_t zone) { zone_ = zone; }
-  void set_range(float min_val, float max_val, float step) {
-    this->min_value_ = min_val;
-    this->max_value_ = max_val;
-    this->step_ = step;
-  }
-  
- protected:
-  uint8_t zone_{1};
-  
-  void control(float value) override;
+  uint8_t zone{1};
+  float min_value{0};
+  float max_value{100};
+  float step{1};
 };
 
 }  // namespace mirage_m400
