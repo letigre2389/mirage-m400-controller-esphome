@@ -60,7 +60,7 @@ CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend(
 
 async def to_code(config):
     # Include the header file
-    cg.add_includes("esphome/components/mirage_m400/mirage_m400.h")
+    cg.add_include("esphome/components/mirage_m400/mirage_m400.h")
     
     # Get the UART component
     uart_component = await cg.get_variable(config[CONF_UART_ID])
