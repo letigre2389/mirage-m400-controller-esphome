@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_NAME
 
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400TextSensor = mirage_m400_ns.class_(
@@ -27,11 +27,11 @@ from esphome.const import CONF_ID
 
 from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
 
-TEXT_SENSOR_SCHEMA = text_sensor.TEXT_SENSOR_SCHEMA.extend(
-    {
-        cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
-    }
-)
+TEXT_SENSOR_SCHEMA = cv.Schema({
+    cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
+    cv.Required(CONF_NAME): cv.string,
+    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+})
 
 async def to_code(config, parent=None):
     var = cg.new_variable(config[CONF_ID], MirageM400TextSensor)
