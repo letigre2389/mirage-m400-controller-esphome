@@ -20,7 +20,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
     cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"): cv.string,
-    cv.Optional("mode", default="auto"): cv.enum(["auto", "slider", "box"]),
+    cv.Optional("mode", default="auto"): cv.enum({"auto": "auto", "slider": "slider", "box": "box"}),
 })
 
 async def to_code(config):
