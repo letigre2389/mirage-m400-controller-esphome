@@ -21,10 +21,11 @@ class MirageM400Number : public number::Number {
   int zone_{0};
 };
 
-class MirageM400Switch : public switch::Switch {
+// We inherit from Component instead of switch::Switch to avoid the reserved word conflict
+class MirageM400Switch : public Component {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
-  void write_state(bool state) override;
+  void write_state(bool state);
   void dump_config() { ESP_LOGD("custom", "Mirage M400 Switch"); }
  protected:
   MirageM400Component *parent_{nullptr};
