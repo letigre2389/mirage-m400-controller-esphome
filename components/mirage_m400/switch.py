@@ -17,7 +17,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
-    cv.Optional("restore_mode", default=cv.UseID(CONF_ID)): cv.enum{
+    cv.Optional("restore_mode", default=cv.UseID(CONF_ID)): cv.enum(
         "ALWAYS_OFF", "ALWAYS_ON", "RESTORE_DEFAULT_OFF", "RESTORE_DEFAULT_ON"
     ),
 })
