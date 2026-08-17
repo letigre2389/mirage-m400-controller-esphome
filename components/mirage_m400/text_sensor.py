@@ -25,7 +25,7 @@ import esphome.config_validation as cv
 from esphome.components import text_sensor
 from esphome.const import CONF_ID
 
-from . import mirage_m400_ns, MirageM400Component, MirageM400TextSensor, CONF_MIRAGE_M400_ID
+from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
 
 TEXT_SENSOR_SCHEMA = text_sensor.TEXT_SENSOR_SCHEMA.extend(
     {
