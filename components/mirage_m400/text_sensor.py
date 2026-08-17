@@ -31,6 +31,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
     cv.Required(CONF_NAME): cv.string,
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+    cv.Optional("icon"): cv.string,
 })
 
 async def to_code(config, parent=None):
