@@ -15,17 +15,18 @@ class MirageM400Number : public number::Number {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void control(float value);
-  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Number"); }
+  void dump_config(); // Removed override
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
 };
 
-class MirageM400Switch : public switch::Switch {
+// Using the components:: namespace to avoid the reserved 'switch' keyword
+class MirageM400Switch : public components::switch::Switch {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void write_state(bool state) override;
-  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Switch"); }
+  void dump_config(); // Removed override
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
@@ -36,7 +37,7 @@ class MirageM400TextSensor : public text_sensor::TextSensor {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void set_last_response(const std::string &response);
-  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Text Sensor"); }
+  void dump_config(); // Removed override
  protected:
   MirageM400Component *parent_{nullptr};
 };
