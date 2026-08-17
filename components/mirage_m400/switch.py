@@ -9,7 +9,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
     cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES),
-}).extend(switch.CONFIG_SCHEMA)
+})
 
 async def to_code(config):
     hub = cg.get_variable(cv.get_id(CONF_MIRAGE_M400_ID))

@@ -8,7 +8,7 @@ DEPENDENCIES = ['mirage_m400']
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
-}).extend(number.CONFIG_SCHEMA)
+})
 
 async def to_code(config):
     hub = cg.get_variable(cv.get_id(CONF_MIRAGE_M400_ID))
