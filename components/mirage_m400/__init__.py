@@ -7,14 +7,15 @@ CODEOWNERS = ["@letigre2389"]
 DEPENDENCIES = ["uart", "text_sensor", "switch", "number"]
 AUTO_LOAD = ["uart", "text_sensor", "switch", "number"]
 
+CONF_MIRAGE_M400 = "mirage_m400"
+CONF_MIRAGE_M400_ID = "mirage_m400_id"
+
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400Component = mirage_m400_ns.class_("MirageM400Component", cg.Component, uart.UARTDevice)
 
-CONF_MIRAGE_M400 = "mirage_m400"
 CONF_TEXT_SENSORS = "text_sensors"
 CONF_SWITCHES = "switches"
 CONF_NUMBERS = "numbers"
-CONF_MIRAGE_M400_ID = "mirage_m400_id"
 
 TEXT_SENSOR_SCHEMA = cv.Schema(
     {
