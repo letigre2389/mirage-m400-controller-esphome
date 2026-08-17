@@ -14,6 +14,7 @@ CONF_MIRAGE_M400 = "mirage_m400"
 CONF_TEXT_SENSORS = "text_sensors"
 CONF_SWITCHES = "switches"
 CONF_NUMBERS = "numbers"
+CONF_MIRAGE_M400_ID = 'mirage_m400_id"
 
 TEXT_SENSOR_SCHEMA = cv.Schema(
     {
