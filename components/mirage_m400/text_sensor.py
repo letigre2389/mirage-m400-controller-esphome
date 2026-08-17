@@ -7,9 +7,9 @@ DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): cv.string,
-    cv.Optional("icon"): cv.string,
-    cv.Optional("internal"): cv.string,
+    cv.Optional("name"): cv.ensure_string,
+    cv.Optional("icon"): cv.ensure_string,
+    cv.Optional("internal"): cv.boolean,
     cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
