@@ -32,6 +32,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required(CONF_NAME): cv.string,
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Optional("icon"): cv.string,
+    cv.Optional("desabled_by_default", default=False): cv.boolean,
 })
 
 async def to_code(config, parent=None):
