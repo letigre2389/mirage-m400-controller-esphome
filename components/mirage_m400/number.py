@@ -9,7 +9,7 @@ MirageM400Number = mirage_m400_ns.class_(
     "MirageM400Number", number.Number, cg.Component
 )
 
-NUMBER_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(MirageM400Number),
         cv.Required("name"): cv.string,
