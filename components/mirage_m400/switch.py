@@ -17,6 +17,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Required("zone"): cv.int_range(min=1, max=16),
         cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
         cv.Optional("icon"): cv.string,
+        cv.Optional("disabled_by_default", default=False): cv.boolean,
     }
 )
 
