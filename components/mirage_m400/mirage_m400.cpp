@@ -23,7 +23,6 @@ void MirageM400Component::loop() {
 
 void MirageM400Component::process_response_(const std::string &response) {
   if (this->text_sensor_) {
-    this->text_sensor_->set_last_// Corrected to match the method name in .h
     this->text_sensor_->set_last_response(response);
   }
 }
@@ -69,5 +68,5 @@ void MirageM400TextSensor::set_last_response(const std::string &response) {
   this->publish_state(response);
 }
 
-  }  // namespace mirage_m400
-  }  // namespace esphome
+}  // namespace mirage_m400
+}  // namespace esphome
