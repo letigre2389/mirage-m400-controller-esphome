@@ -30,4 +30,4 @@ async def to_code(config):
     cg.add(parent.register_switch(var))
     cg.add(var.set_parent(parent))
 
-    await esphome.components.switch.register_switch(var, config)
+    await switch.register_switch(var, config)
