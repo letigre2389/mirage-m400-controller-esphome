@@ -1,10 +1,10 @@
 #pragma once
 
 #include "esphome.h"
-#include "esphome/components/text_sensor.h"
-#include "esphome/components/switch.h"
-#include "esphome/components/number.h"
-#include "esphome/components/uart/uart.h"
+#include "text_sensor.h"
+#include "switch.h"
+#include "number.h"
+#include "uart.h"
 
 namespace esphome {
 namespace mirage_m400 {
