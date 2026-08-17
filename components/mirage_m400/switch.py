@@ -21,8 +21,13 @@ CONFIG_SCHEMA = cv.Schema(
     }
 )
 
-async def to_code(config, parent):
+async def to_code(config):
     var = cg.new_variable(config[CONF_ID], MirageM400Switch)
     await cg.register_component(var, config)
-    await switch.register_switch(var, config)
+
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+
     cg.add(parent.register_switch(var))
+    cg.add(var.set_parent(parent))
+
+    await esphome.components.switch.register_switch(var, config)
