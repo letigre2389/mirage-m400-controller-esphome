@@ -15,7 +15,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Required("zone"): cv.int_range(min=1, max=16),
     cv.Optional("min_value", default=0): cv.float_,
-    cv.Optional("max_vaule", default=100): cv.float_,
+    cv.Optional("max_value", default=100): cv.float_,
     cv.Optional("step", default=1): cv.float_,
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
