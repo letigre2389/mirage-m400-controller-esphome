@@ -17,9 +17,9 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
     cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"): cv.string,
-    cv.Optional("min_value", default=0): cv.number,
-    cv.Optional("max_vaule", default=100): cv.number,
-    cv.Optional("step", default=1): cv.number,
+    cv.Optional("min_value", default=0): cv.float,
+    cv.Optional("max_vaule", default=100): cv.float,
+    cv.Optional("step", default=1): cv.float,
 })
 
 async def to_code(config):
