@@ -17,9 +17,6 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
-    cv.Optional("restore_mode", default=cv.UseId(CONF_ID)): cv.enum(
-        "ALWAYS_OFF", "ALWAYS_ON", "RESTORE_DEFAULT_OFF", "RESTORE_DEFAULT_ON"
-    ),
 })
 
 async def to_code(config):
