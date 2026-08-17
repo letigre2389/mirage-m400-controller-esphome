@@ -17,7 +17,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
-    cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"),
+    cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"): cv.string,
 })
 
 async def to_code(config):
