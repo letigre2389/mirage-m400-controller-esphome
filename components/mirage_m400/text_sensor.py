@@ -19,14 +19,14 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("disabled_by_default", default=False): cv.boolean,
 })
 
-async def to_code(config, parent=None):
+async def to_code(config):
     # Create the C++ object
     var = cg.new_variable(config[CONF_ID], MirageM400TextSensor)
     await cg.register_component(var, config)
 
-    # Ensure we have the parent hub (MirageM400Component)
-    if parent is None:
-        parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    # Look up the parent hub using the ID from the YAML
+    # This replaces the 'parent' argument entirely
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
 
     # Link the sensor to the hub and the hub to the sensor
     cg.add(parent.register_text_sensor(var))
