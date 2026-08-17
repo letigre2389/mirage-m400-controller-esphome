@@ -9,7 +9,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
     cv.Optional("name"): cv.string,
     cv.Optional("icon"): cv.string,
-    cv.Optional("internal"): cv.string
+    cv.Optional("internal"): cv.string,
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(),
 })
 
