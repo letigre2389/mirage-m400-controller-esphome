@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import number
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_NAME
 
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400Number = mirage_m400_ns.class_(
