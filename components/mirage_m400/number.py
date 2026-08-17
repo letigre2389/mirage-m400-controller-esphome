@@ -19,6 +19,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional("max_value", default=100): cv.float_,
         cv.Optional("step", default=1): cv.float_,
         cv.Optional("icon"): cv.string,
+        cv.Optional("disabled_by_default", default=False): cv.boolean,
     }
 )
 
