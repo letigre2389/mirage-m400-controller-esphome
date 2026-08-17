@@ -10,7 +10,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("name"): cv.string,
     cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.string,
-    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(),
+    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
 async def to_code(config):

@@ -11,7 +11,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.boolean,
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
-    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(),
+    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
 async def to_code(config):
