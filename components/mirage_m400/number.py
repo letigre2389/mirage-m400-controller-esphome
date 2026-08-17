@@ -9,19 +9,20 @@ MirageM400Number = mirage_m400_ns.class_(
     "MirageM400Number", number.Number, cg.Component
 )
 
-CONFIG_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(): cv.declare_id(MirageM400Number),
-        cv.Required("name"): cv.string,
-        cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
-        cv.Required("zone"): cv.int_range(min=1, max=16),
-        cv.Optional("min_value", default=0): cv.float_,
-        cv.Optional("max_value", default=100): cv.float_,
-        cv.Optional("step", default=1): cv.float_,
-        cv.Optional("icon"): cv.string,
-        cv.Optional("disabled_by_default", default=False): cv.boolean,
-    }
-)
+CONFIG_SCHEMA = cv.Schema({
+    cv.GenerateID(): cv.declare_id(MirageM400Number),
+    cv.Required("name"): cv.string,
+    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+    cv.Required("zone"): cv.int_range(min=1, max=16),
+    cv.Optional("min_value", default=0): cv.float_,
+    cv.Optional("max_value", default=100): cv.float_,
+    cv.Optional("step", default=1): cv.float_,
+    cv.Optional("icon"): cv.string,
+    cv.Optional("disabled_by_default", default=False): cv.boolean,
+    cv.Optional("restore_mode", default=cv.UseId(CONF_ID)): cv.enum(
+        "ALWAYS_OFF", "ALWAYS_ON", "RESTORE_DEFAULT_OFF", "RESTORE_DEFAULT_ON"
+    ),
+})
 
 async def to_code(config):
     var = cg.new_variable(config[CONF_ID], MirageM400Number)
