@@ -15,18 +15,17 @@ class MirageM400Number : public number::Number {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void control(float value);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Number"); }
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Number"); }
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
 };
 
-// We inherit from Component instead of switch::Switch to avoid the reserved word conflict
-class MirageM400Switch : public Component {
+class MirageM400Switch : public switch_::Switch {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void write_state(bool state);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Switch"); }
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Switch"); }
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
@@ -37,13 +36,16 @@ class MirageM400TextSensor : public text_sensor::TextSensor {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void set_last_response(const std::string &response);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Text Sensor"); }
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Text Sensor"); }
  protected:
   MirageM400Component *parent_{nullptr};
 };
 
 class MirageM400Component : public Component, public uart::UARTDevice {
  public:
+  // Fixed: Added constructor that takes the UART component
+  MirageM400Component(uart::UARTComponent *parent) : UARTDevice(parent) {}
+
   void setup() override;
   void loop() override;
   void dump_config() override;
