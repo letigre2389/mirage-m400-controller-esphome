@@ -12,9 +12,11 @@ CONFIG_SCHEMA = cv.Schema({
 async def to_code(config):
     hub = cg.get_variable(cv.get_id(mirage_m400.CONF_MIRAGE_M400_ID))
 
-    # Correct C++ generation: sensor = new MirageM400TextSensor();
+    # Create the Text Sensor: sensor = new MirageM400TextSensor();
     sensor = cg.new_Pvariable(cg.MirageM400TextSensor())
+
     cg.add_expression(" %s->set_parent(%s);" % (sensor, hub))
     cg.add_expression(" %s->register_text_sensor(%s);" % (hub, sensor))
 
     cg.register_text_sensor(sensor, config)
+    
