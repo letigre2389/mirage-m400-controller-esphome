@@ -23,8 +23,13 @@ CONFIG_SCHEMA = cv.Schema(
     }
 )
 
-async def to_code(config, parent):
+async def to_code(config):
     var = cg.new_variable(config[CONF_ID], MirageM400Number)
     await cg.register_component(var, config)
-    await number.register_number(var, config)
+
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+
     cg.add(parent.register_number(var))
+    cg.add(var.set_parent(parent))
+
+    await esphome.components.number.register_number(var, config)
