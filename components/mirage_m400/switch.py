@@ -8,12 +8,14 @@ MirageM400Switch = mirage_m400_ns.class_(
     "MirageM400Switch", switch.Switch, cg.Component
 )
 
-SWITCH_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(MirageM400Switch),
         cv.Required("name"): cv.string,
+        cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
         cv.Required("zone"): cv.int_range(min=1, max=16),
         cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
+        cv.Optional("icon"): cv.string,
     }
 )
 
