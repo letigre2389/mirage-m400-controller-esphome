@@ -14,7 +14,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required("name"): cv.string,
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Required("zone"): cv.int_range(min=1, max=16),
-    cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
+    cv.Required("type"): cv.enum([0, "power", 1, "mute"]),
     cv.Optional("icon"): cv.string,
     cv.Optional("disabled_by_default", default=False): cv.boolean,
     cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"): cv.string,
