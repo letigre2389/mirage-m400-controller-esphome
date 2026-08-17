@@ -6,7 +6,7 @@ from .constants import *
 DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.Optional(text_sensor.TEXT_SENSOR_ID): cv.generate_id(),
+    cv.Optional("id"): cv.GenerateID(),
 }).extend(text_sensor.CONFIG_SCHEMA)
 
 async def to_code(config):

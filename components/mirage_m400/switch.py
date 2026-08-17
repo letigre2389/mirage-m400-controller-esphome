@@ -6,7 +6,7 @@ from .constants import *
 DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.Optional(switch.SWITCH_ID): cv.generate_id(),
+    cv.Optional("id"): cv.GenerateID(),
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
     cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES),
 }).extend(switch.CONFIG_SCHEMA)
