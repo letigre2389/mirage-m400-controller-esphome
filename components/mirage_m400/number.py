@@ -23,12 +23,22 @@ CONFIG_SCHEMA = cv.Schema({
 })
 
 async def to_code(config):
+    # Create the C++ object
     var = cg.new_variable(config[CONF_ID], MirageM400Number)
     await cg.register_component(var, config)
 
+    # Look up the parent hub
     parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
 
+    # Link the number to the hub
     cg.add(parent.register_number(var))
     cg.add(var.set_parent(parent))
 
-    await number.register_number(var, config)
+    # Register with the ESPHome core, explicitly passing the required values
+    await number.register_number(
+        var,
+        config,
+        min_value=config["min_value"],
+        max_value=config["max_value"],
+        step=config["step"]
+    )
