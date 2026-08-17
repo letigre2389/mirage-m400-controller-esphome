@@ -27,7 +27,7 @@ from esphome.const import CONF_ID
 
 from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
 
-TEXT_SENSOR_SCHEMA = cv.Schema({
+CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
     cv.Required(CONF_NAME): cv.string,
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
