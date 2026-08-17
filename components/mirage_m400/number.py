@@ -32,4 +32,4 @@ async def to_code(config):
     cg.add(parent.register_number(var))
     cg.add(var.set_parent(parent))
 
-    await esphome.components.number.register_number(var, config)
+    await number.register_number(var, config)
