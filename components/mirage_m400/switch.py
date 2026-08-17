@@ -14,8 +14,9 @@ CONFIG_SCHEMA = cv.Schema({
 async def to_code(config):
     hub = cg.get_variable(cv.get_id(mirage_m400.CONF_MIRAGE_M400_ID))
 
-    # Correct C++ generation: var = new Class();
+    # Create the Switch: sw = new MirageM400Switch();
     sw = cg.new_Pvariable(cg.MirageM400Switch())
+
     cg.add_expression(" %s->set_parent(%s);" % (sw, hub))
     cg.add_expression(" %s->set_zone(%d);" % (sw, config[mirage_m400.CONF_ZONE]))
     cg.add_expression(" %s->set_type(%d);" % (sw, config[mirage_m400.CONF_TYPE]))
