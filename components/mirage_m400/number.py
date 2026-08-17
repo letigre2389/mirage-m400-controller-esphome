@@ -17,6 +17,7 @@ NUMBER_SCHEMA = cv.Schema(
         cv.Optional("min_value", default=0): cv.float_,
         cv.Optional("max_value", default=100): cv.float_,
         cv.Optional("step", default=1): cv.float_,
+        cv.Optional("icon"): cv.string,
     }
 )
 
