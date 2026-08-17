@@ -4,8 +4,8 @@ from esphome.components import uart
 from esphome.const import CONF_ID
 
 CODEOWNERS = ["@letigre2389"]
-DEPENDENCIES = ["uart"]
-AUTO_LOAD = ["uart"]
+DEPENDENCIES = ["uart", "text_sensor", "switch", "number"]
+AUTO_LOAD = ["uart", "text_sensor", "switch", "number"]
 
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400Component = mirage_m400_ns.class_("MirageM400Component", cg.Component, uart.UARTDevice)
