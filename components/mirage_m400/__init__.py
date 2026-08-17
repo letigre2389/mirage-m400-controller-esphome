@@ -18,9 +18,8 @@ SWITCH_TYPES = {
 DEPENDENCIES = ["uart"]
 
 CONFIG_SCHEMA = cv.Schema({
-    # FIXED: Use generate_id() instead of use_id() for the component's own ID
-    cv.Optional(CONF_MIRAGE_M400_ID): cv.generate_id(),
-    # Allow the user to specify which UART to use, otherwise it will look for 'uart_bus'
+    # FIXED: Changed generate_id() to GenerateID() to match your ESPHome version
+    cv.Optional(CONF_MIRAGE_M400_ID): cv.GenerateID(),
     cv.Optional(CONF_UART_ID): cv.use_id(uart.UARTComponent),
 }).extend(cv.COMPONENT_SCHEMA)
 
