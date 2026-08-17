@@ -1,32 +1,24 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
-from esphome.const import CONF_ID, CONF_NAME
-from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
+from . import mirage_m400
 
-mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
-MirageM400Switch = mirage_m400_ns.class_(
-    "MirageM400Switch", switch.Switch, cg.Component
-)
+DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.GenerateID(): cv.declare_id(MirageM400Switch),
-    cv.Required("name"): cv.string,
-    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
-    cv.Required("zone"): cv.int_range(min=1, max=16),
-    cv.Required("type"): cv.enum({"power": 0, "mute": 1}),
-    cv.Optional("icon"): cv.string,
-    cv.Optional("disabled_by_default", default=False): cv.boolean,
-    cv.Optional("restore_mode", default="RESTORE_DEFAULT_OFF"): cv.string,
-})
+    cv.Optional(switch.SWITCH_ID): cv.generate_id(),
+    cv.Required(mirage_m400.CONF_ZONE): cv.int_range(1, 4),
+    cv.Required(mirage_m400.CONF_TYPE): cv.enum(mirage_m400.SWITCH_TYPES),
+}).extend(switch.CONFIG_SCHEMA)
 
 async def to_code(config):
-    var = cg.new_variable(config[CONF_ID], MirageM400Switch)
-    await cg.register_component(var, config)
+    hub = cg.get_variable(cv.get_id(mirage_m400.CONF_MIRAGE_M400_ID))
 
-    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    # Correct C++ generation: var = new Class();
+    sw = cg.new_Pvariable(cg.MirageM400Switch())
+    cg.add_expression(" %s->set_parent(%s);" % (sw, hub))
+    cg.add_expression(" %s->set_zone(%d);" % (sw, config[mirage_m400.CONF_ZONE]))
+    cg.add_expression(" %s->set_type(%d);" % (sw, config[mirage_m400.CONF_TYPE]))
+    cg.add_expression(" %s->register_switch(%s);" % (hub, sw))
 
-    cg.add(parent.register_switch(var))
-    cg.add(var.set_parent(parent))
-
-    await switch.register_switch(var, config)
+    cg.register_switch(sw, config)
