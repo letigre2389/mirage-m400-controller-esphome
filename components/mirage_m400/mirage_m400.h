@@ -15,18 +15,17 @@ class MirageM400Number : public number::Number {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void control(float value);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Number"); }
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Number"); }
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
 };
 
-// Use the fully qualified name to avoid the 'switch' keyword conflict
-class MirageM400Switch : public esphome::components::switch::Switch {
+class MirageM400Switch : public switch::Switch {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
-  void write_state(bool state);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Switch"); }
+  void write_state(bool state) override;
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Switch"); }
  protected:
   MirageM400Component *parent_{nullptr};
   int zone_{0};
@@ -37,9 +36,9 @@ class MirageM400TextSensor : public text_sensor::TextSensor {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void set_last_response(const std::string &response);
-  void dump_config() { ESP_LOGD("custom", "Mirage M400 Text Sensor"); }
+  void dump_config() override { ESP_LOGD("custom", "Mirage M400 Text Sensor"); }
  protected:
-  MirageM400Component *parent_{nullptr}; // Fixed: Added missing parent_ member
+  MirageM400Component *parent_{nullptr};
 };
 
 class MirageM400Component : public Component, public uart::UARTDevice {
@@ -61,5 +60,5 @@ class MirageM400Component : public Component, public uart::UARTDevice {
   std::vector<MirageM400Number *> numbers_;
 };
 
-  }  // namespace mirage_m400
-  }  // namespace esphome
+}  // namespace mirage_m400
+}  // namespace esphome
