@@ -2,6 +2,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
 from esphome.const import CONF_ID, CONF_NAME
+from . import mirage_m400_ns, MirageM400Component, CONF_MIRAGE_M400_ID
 
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
 MirageM400Switch = mirage_m400_ns.class_(
