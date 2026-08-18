@@ -8,10 +8,10 @@ DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): cv.string,
-    cv.Optional("icon"): cv.string,
+    cv.Optional("name"): str,
+    cv.Optional("icon"): str,
     cv.Optional("internal"): cv.boolean,
-    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
+    cv.Required(CONF_MIRAGE_M400_ID): str,
 })
 
 async def to_code(config):
