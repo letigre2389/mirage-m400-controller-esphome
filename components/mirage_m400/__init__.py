@@ -4,16 +4,18 @@ from esphome.components import uart
 from .constants import *
 
 DEPENDENCIES = ["uart"]
+AUTO_LOAD = ["switch", "number", "text_sensor"]
+
+mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
+MirageM400Component = mirage_m400_ns.class_("MirageM400Component", cg.Component, uart.UARTDevice)
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.Optional(CONF_MIRAGE_M400_ID): cv.GenerateID(),
+    cv.Required(CONF_MIRAGE_M400_ID): cv.declare_id(MirageM400Component),
     cv.Optional(CONF_UART_ID): cv.use_id(uart.UARTComponent),
 }).extend(cv.COMPONENT_SCHEMA)
 
+
 async def to_code(config):
-    uart_id = config.get(CONF_UART_ID, "uart_bus")
-    uart_dev = cg.get_variable(cv.get_id(uart_id))
-    
-    hub = cg.new_Pvariable(cg.MirageM400Component)
-    cg.add_expression(" %s = new MirageM400Component(%s);" % (hub, uart_dev))
-    cg.add_component(hub)
+    uart_component = await cg.get_variable(config.get(CONF_UART_ID, "uart_bus"))
+    hub = cg.new_Pvariable(config[CONF_MIRAGE_M400_ID], uart_component)
+    await cg.register_component(hub, config)

@@ -1,4 +1,7 @@
-version: 1.0.0
+version: 1.0
 type: component
+documentation: https://github.com/letigre2389/mirage-m400-controller-esphome
+repository: https://github.com/letigre2389/mirage-m400-controller-esphome
 dependencies:
   - uart
+requirements: []

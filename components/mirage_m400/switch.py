@@ -1,25 +1,26 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
+from . import mirage_m400_ns, MirageM400Component
 from .constants import *
 
-DEPENDENCIES = ['mirage_m400']
+DEPENDENCIES = ["mirage_m400"]
 
-CONFIG_SCHEMA = cv.Schema({
-    cv.Optional("id"): cv.string,
-    cv.Optional("name"): cv.string,
-    cv.Optional("icon"): cv.string,
-    cv.Optional("internal"): cv.boolean,
-    cv.Required(CONF_ZONE): cv.int_range(1, 4),
+MirageM400Switch = mirage_m400_ns.class_("MirageM400Switch", switch.Switch)
+
+CONFIG_SCHEMA = switch.SWITCH_SCHEMA.extend({
+    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+    cv.Required(CONF_ZONE): cv.int_range(1, 17),
     cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES),
-    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
+
 async def to_code(config):
-    hub = cg.get_variable(cv.get_id(config[CONF_MIRAGE_M400_ID]))
-    sw = cg.new_Pvariable(cg.MirageM400Switch())
-    cg.add_expression(" %s->set_parent(%s);" % (sw, hub))
-    cg.add_expression(" %s->set_zone(%d);" % (sw, config[CONF_ZONE]))
-    cg.add_expression(" %s->set_type(%d);" % (sw, config[CONF_TYPE]))
-    cg.add_expression(" %s->register_switch(%s);" % (hub, sw))
-    cg.register_switch(sw, config)
+    hub = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    var = cg.new_Pvariable(
+        config[CONF_ID],
+        cg.RawExpression(f"(uint8_t){config[CONF_ZONE]}"),
+        cg.RawExpression(f"(uint8_t){SWITCH_TYPES[config[CONF_TYPE]]}"),
+    )
+    await switch.register_switch(var, config)
+    cg.add(hub.register_switch(var))
