@@ -26,6 +26,4 @@ async def to_code(config):
         config[cv.CONF_NAME],
         cg.RawExpression(f"(uint8_t){config[CONF_ZONE]}"),
     )
-    await cg.register_component(var, config)
     await number.register_number(var, config)
-    cg.add(hub.register_number(var))
