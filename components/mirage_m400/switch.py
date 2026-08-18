@@ -1,3 +1,4 @@
+# VERSION 3.0
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
@@ -18,10 +19,8 @@ CONFIG_SCHEMA = cv.Schema({
 async def to_code(config):
     hub = cg.get_variable(cv.get_id(config[CONF_MIRAGE_M400_ID]))
     sw = cg.new_Pvariable(cg.MirageM400Switch())
-
     cg.add_expression(" %s->set_parent(%s);" % (sw, hub))
     cg.add_expression(" %s->set_zone(%d);" % (sw, config[CONF_ZONE]))
     cg.add_expression(" %s->set_type(%d);" % (sw, config[CONF_TYPE]))
     cg.add_expression(" %s->register_switch(%s);" % (hub, sw))
-
     cg.register_switch(sw, config)
