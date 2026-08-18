@@ -4,16 +4,12 @@ from esphome.components import text_sensor
 from .constants import *
 
 DEPENDENCIES = ['mirage_m400']
-
-def safe_string(value):
-    return str(value)
-
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): safe_string,
-    cv.Optional("icon"): safe_string,
+    cv.Optional("name"): cv.string,
+    cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.boolean,
-    cv.Required(CONF_MIRAGE_M400_ID): safe_string,
+    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
 async def to_code(config):

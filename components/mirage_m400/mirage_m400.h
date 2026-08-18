@@ -14,6 +14,7 @@ class MirageM400Component;
 class MirageM400Number : public number::Number {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
+  void set_zone(int zone) { this->zone_ = zone; }
   void control(float value);
   void dump_config() override { ESP_LOGD("custom", "Mirage M400 Number"); }
  protected:
@@ -24,6 +25,8 @@ class MirageM400Number : public number::Number {
 class MirageM400Switch : public switch_::Switch {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
+  void set_zone(int zone) { this->zone_ = zone; }
+  void set_type(int type) { this->type_ = type; }
   void write_state(bool state);
   void dump_config() override { ESP_LOGD("custom", "Mirage M400 Switch"); }
  protected:
@@ -43,21 +46,16 @@ class MirageM400TextSensor : public text_sensor::TextSensor {
 
 class MirageM400Component : public Component, public uart::UARTDevice {
  public:
-  // Fixed: Added constructor that takes the UART component
   MirageM400Component(uart::UARTComponent *parent) : UARTDevice(parent) {}
-
   void setup() override;
   void loop() override;
   void dump_config() override;
-
   void send_command(const std::string &command);
   void register_switch(MirageM400Switch *sw);
   void register_text_sensor(MirageM400TextSensor *sensor);
   void register_number(MirageM400Number *num);
-
  protected:
   void process_response_(const std::string &response);
-
   MirageM400TextSensor *text_sensor_{nullptr};
   std::vector<MirageM400Switch *> switches_;
   std::vector<MirageM400Number *> numbers_;

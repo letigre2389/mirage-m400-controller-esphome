@@ -5,20 +5,17 @@ from .constants import *
 
 DEPENDENCIES = ['mirage_m400']
 
-def safe_string(value):
-    return str(value)
-
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): safe_string,
-    cv.Optional("icon"): safe_string,
+    cv.Optional("name"): cv.string,
+    cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.boolean,
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
-    cv.Required(CONF_MIRAGE_M400_ID): safe_string,
+    cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
 async def to_code(config):
-    hub = cg.get_variable(cv.get_id([CONF_MIRAGE_M400_ID]))
+    hub = cg.get_variable(cv.get_id(config[CONF_MIRAGE_M400_ID]))
     num = cg.new_Pvariable(cg.MirageM400Number())
     cg.add_expression(" %s->set_parent(%s);" % (num, hub))
     cg.add_expression(" %s->set_zone(%d);" % (num, config[CONF_ZONE]))
