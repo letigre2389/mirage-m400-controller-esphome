@@ -19,10 +19,10 @@ CONFIG_SCHEMA = number.number_schema(MirageM400Number).extend({
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
     var = cg.new_Pvariable(config[cv.CONF_ID], hub)
-    await number.register_number(
-        var,
-        config,
-        min_value=0,
-        max_value=100,
-        step=1
-    )
+    
+    # Set min, max, step on the C++ object
+    cg.add(var.set_min_value(0))
+    cg.add(var.set_max_value(100))
+    cg.add(var.set_step(1))
+    
+    await number.register_number(var, config)
