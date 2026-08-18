@@ -5,12 +5,15 @@ from .constants import *
 
 DEPENDENCIES = ['mirage_m400']
 
+def safe_string(value):
+    return str(value)
+
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): str,
-    cv.Optional("icon"): str,
+    cv.Optional("name"): safe_string,
+    cv.Optional("icon"): safe_string,
     cv.Optional("internal"): cv.boolean,
-    cv.Required(CONF_MIRAGE_M400_ID): str,
+    cv.Required(CONF_MIRAGE_M400_ID): safe_string,
 })
 
 async def to_code(config):
