@@ -8,8 +8,7 @@ DEPENDENCIES = ["mirage_m400"]
 
 MirageM400Switch = mirage_m400_ns.class_("MirageM400Switch", switch.Switch)
 
-CONFIG_SCHEMA = switch.SWITCH_SCHEMA.extend({
-    cv.GenerateID(): cv.declare_id(MirageM400Switch),
+CONFIG_SCHEMA = switch.switch_schema(MirageM400Switch).extend({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Required(CONF_ZONE): cv.int_range(1, 17),
     cv.Required(CONF_TYPE): cv.enum(SWITCH_TYPES),

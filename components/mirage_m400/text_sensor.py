@@ -10,8 +10,7 @@ MirageM400TextSensor = mirage_m400_ns.class_(
     "MirageM400TextSensor", text_sensor.TextSensor, cg.Component
 )
 
-CONFIG_SCHEMA = text_sensor.TEXT_SENSOR_SCHEMA.extend({
-    cv.GenerateID(): cv.declare_id(MirageM400TextSensor),
+CONFIG_SCHEMA = text_sensor.text_sensor_schema(MirageM400TextSensor).extend({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(mirage_m400_ns.class_("MirageM400Component")),
 })
 

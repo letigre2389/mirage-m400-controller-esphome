@@ -8,8 +8,7 @@ DEPENDENCIES = ["mirage_m400"]
 
 MirageM400Number = mirage_m400_ns.class_("MirageM400Number", number.Number)
 
-CONFIG_SCHEMA = number.NUMBER_SCHEMA.extend({
-    cv.GenerateID(): cv.declare_id(MirageM400Number),
+CONFIG_SCHEMA = number.number_schema(MirageM400Number).extend({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Required(CONF_ZONE): cv.int_range(1, 17),
     cv.Optional("min_value", default=0): cv.float_range(0, 100),
