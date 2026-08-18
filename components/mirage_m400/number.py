@@ -13,9 +13,6 @@ MirageM400Number = mirage_m400_ns.class_(
 CONFIG_SCHEMA = number.number_schema(MirageM400Number).extend({
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(mirage_m400_ns.class_("MirageM400Component")),
     cv.Required(CONF_ZONE): cv.int_range(min=1, max=17),
-    cv.Optional("min_value", default=0): cv.float_,
-    cv.Optional("max_value", default=100): cv.float_,
-    cv.Optional("step", default=1): cv.float_,
 })
 
 
@@ -23,9 +20,10 @@ async def to_code(config):
     hub = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
     var = cg.new_Pvariable(config[cv.CONF_ID], hub)
     
-    # Set min, max, step on the C++ object
-    cg.add(var.set_min_value(config["min_value"]))
-    cg.add(var.set_max_value(config["max_value"]))
-    cg.add(var.set_step(config["step"]))
-    
-    await number.register_number(var, config)
+    await number.register_number(
+        var,
+        config,
+        min_value=0,
+        max_value=100,
+        step=1
+    )
