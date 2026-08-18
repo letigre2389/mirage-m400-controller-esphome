@@ -7,15 +7,15 @@ DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
     cv.Optional("id"): cv.GenerateID(),
-    cv.Optional("name"): cv.ensure_string,
-    cv.Optional("icon"): cv.ensure_string,
+    cv.Optional("name"): cv.string,
+    cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.boolean,
     cv.Required(CONF_ZONE): cv.int_range(1, 4),
     cv.Required(CONF_MIRAGE_M400_ID): cv.string,
 })
 
 async def to_code(config):
-    hub = cg.get_variable(cv.get_id(CONF_MIRAGE_M400_ID))
+    hub = cg.get_variable(cv.get_id([CONF_MIRAGE_M400_ID]))
     num = cg.new_Pvariable(cg.MirageM400Number())
 
     cg.add_expression(" %s->set_parent(%s);" % (num, hub))
