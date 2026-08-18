@@ -12,7 +12,7 @@ CONFIG_SCHEMA = cv.Schema({
 
 async def to_code(config):
     uart_id = config[CONF_UART_ID]
-    uart_dev = cg.get_variable(cv.get_id(uart_id)
+    uart_dev = cg.get_variable(cv.get_id(uart_id))
 
     hub = cg.new_Pvariable(cg.MirageM400Component)
     cg.add_expression(" %s = new MirageM400Component(%s);" % (hub, uart_dev))
