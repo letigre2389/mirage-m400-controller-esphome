@@ -8,7 +8,8 @@ DEPENDENCIES = ["mirage_m400"]
 
 MirageM400Number = mirage_m400_ns.class_("MirageM400Number", number.Number)
 
-CONFIG_SCHEMA = cv.Schema({
+CONFIG_SCHEMA = number.NUMBER_SCHEMA.extend({
+    cv.GenerateID(): cv.declare_id(MirageM400Number),
     cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
     cv.Required(CONF_ZONE): cv.int_range(1, 17),
     cv.Optional("min_value", default=0): cv.float_range(0, 100),
@@ -16,7 +17,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional("step", default=1): cv.float_,
     cv.GenerateID(): cv.declare_id(MirageM400Number),
     cv.Required(cv.CONF_NAME): cv.string,
-}).extend(cv.COMPONENT_SCHEMA)
+})
 
 
 async def to_code(config):
