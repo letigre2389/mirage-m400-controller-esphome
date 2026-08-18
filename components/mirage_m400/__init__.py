@@ -6,7 +6,7 @@ from .constants import *
 DEPENDENCIES = ["uart"]
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.Optional(CONF_MIRAGE_M400_ID): cv.string,
+    cv.Optional(CONF_MIRAGE_M400_ID): cv.GenerateID(),
     cv.Optional(CONF_UART_ID): cv.use_id(uart.UARTComponent),
 }).extend(cv.COMPONENT_SCHEMA)
 
