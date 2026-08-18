@@ -22,4 +22,3 @@ async def to_code(config):
     uart_component = await cg.get_variable(config.get(CONF_UART_ID, "uart_bus"))
     hub = cg.new_Pvariable(config[cv.CONF_ID], uart_component)
     await cg.register_component(hub, config)
-    cg.add_global(cg.RawExpression('#include "mirage_m400.h"'))
