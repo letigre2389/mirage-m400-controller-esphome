@@ -6,7 +6,7 @@ from .constants import *
 DEPENDENCIES = ['mirage_m400']
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.Optional("id"): cv.GenerateID(),
+    cv.Optional("id"): cv.string(),
     cv.Optional("name"): cv.string,
     cv.Optional("icon"): cv.string,
     cv.Optional("internal"): cv.boolean,
