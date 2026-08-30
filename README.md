@@ -11,21 +11,39 @@ the previous version.
 
 | Component        | Details                            |
 | ----------------- | ---------------------------------- |
-| Microcontroller   | ESP32 (e.g., ESP32-DevKitC-v1)      |
+| Microcontroller   | ESP32 (e.g., ESP32 DevKit V1 / WROOM-32) |
 | RS-232 Converter  | MAX3232 TTL ↔ RS-232 level shifter |
 | Cable             | DB9 straight-through (per manual)  |
-| GPIO Pins         | TX: GPIO16, RX: GPIO17             |
+| GPIO Pins         | TX: GPIO17 (`TX2`), RX: GPIO16 (`RX2`) |
 
 ## Wiring
 
 On a MAX3232, `T1IN`/`T1OUT` is the **transmit** channel (TTL in → RS-232 out) and
 `R1IN`/`R1OUT` is the **receive** channel (RS-232 in → TTL out). Wire it as:
 
-- **ESP32 TX (GPIO16)** → **MAX3232 T1IN**
-- **MAX3232 T1OUT** → **Mirage M-400 RX (DB9 pin 2)**
-- **Mirage M-400 TX (DB9 pin 3)** → **MAX3232 R1IN**
-- **MAX3232 R1OUT** → **ESP32 RX (GPIO17)**
+- **ESP32 TX (GPIO17, silkscreen `TX2`)** → **MAX3232 T1IN**
+- **MAX3232 T1OUT** → **Mirage M-400 RX (DB9 pin 3)**
+- **Mirage M-400 TX (DB9 pin 2)** → **MAX3232 R1IN**
+- **MAX3232 R1OUT** → **ESP32 RX (GPIO16, silkscreen `RX2`)**
+- **ESP32 3V3** → **converter VCC** (3.3V, not 5V — ESP32 GPIO is not 5V tolerant)
 - **GND** → **GND** (both sides)
+
+On a breakout board with only `VCC` / `GND` / `TXD` / `RXD` broken out, `TXD`/`RXD` are
+named from the module's perspective, so cross them: ESP32 TX (GPIO17) → module `RXD`,
+module `TXD` → ESP32 RX (GPIO16).
+
+### DB9 pin directions
+
+The M-400's rear panel port is a **DB9 female**, and the manual requires a
+**straight-through** cable to a PC. A PC is DTE and drives pin 3, so the amp must be
+wired DCE: **pin 3 is the amp's receive input, pin 2 is its transmit output**, pin 5 is
+ground. Those are the only three pins that carry anything.
+
+> An earlier version of this README had these reversed (amp RX on pin 2, TX on pin 3).
+> If your converter board also presents a female DB9, note that female breakouts are
+> often wired DCE like the amp — check the schematic on the back of the board, and if
+> you see no response, swap pins 2 and 3 with a null-modem adapter. Miswiring TX to TX
+> won't damage anything; RS-232 drivers are short-circuit protected.
 
 > An earlier version of this README had ESP32 TX wired into `R1IN` and ESP32 RX wired
 > into `T1OUT` — that's backwards (TX into the receive channel, RX into the transmit
@@ -43,8 +61,8 @@ external_components:
 
 uart:
   - id: mirage_uart
-    tx_pin: GPIO16
-    rx_pin: GPIO17
+    tx_pin: GPIO17
+    rx_pin: GPIO16
     baud_rate: 9600
     data_bits: 8
     parity: NONE
@@ -185,7 +203,8 @@ likely causes of "the ESP32 sends something but the amp doesn't do the right thi
 5. **Zone byte is likely 0-indexed** — see "Zone Addressing" above. This is
    configurable (`zone_offset`) since it's an inference from the manual's examples,
    not explicitly stated as "physical zone 1 = protocol zone 0".
-6. **Wiring**: TX/RX were mapped to the wrong MAX3232 channels — see Wiring above.
+6. **Wiring**: TX/RX were mapped to the wrong MAX3232 channels, and the DB9 pin
+   directions were reversed — see Wiring above.
 
 ## Troubleshooting
 
