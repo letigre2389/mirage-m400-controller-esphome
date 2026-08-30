@@ -36,6 +36,7 @@ api:
             ESP_LOGI("mirage_service", "Sent command: %s", command.c_str());
 
 ota:
+  - platform: esphome
 
 uart:
   - id: mirage_uart
