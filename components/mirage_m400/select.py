@@ -1,29 +1,22 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import switch
+from esphome.components import select
 from esphome.const import CONF_ID
 
 from . import CONF_MIRAGE_M400_ID, MirageM400Component, mirage_m400_ns
 
 CONF_ZONE = "zone"
-CONF_TYPE = "type"
 
-MirageSwitch = mirage_m400_ns.class_("MirageSwitch", switch.Switch, cg.Component)
-MirageStandbySwitch = mirage_m400_ns.class_("MirageStandbySwitch", MirageSwitch)
-MirageMuteSwitch = mirage_m400_ns.class_("MirageMuteSwitch", MirageSwitch)
-
-TYPE_MAP = {
-    "power": MirageStandbySwitch,
-    "mute": MirageMuteSwitch,
-}
+MirageSourceSelect = mirage_m400_ns.class_(
+    "MirageSourceSelect", select.Select, cg.Component
+)
 
 CONFIG_SCHEMA = (
-    switch.switch_schema(MirageSwitch)
+    select.select_schema(MirageSourceSelect)
     .extend(
         {
             cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
             cv.Required(CONF_ZONE): cv.int_range(min=1, max=32),
-            cv.Required(CONF_TYPE): cv.enum(TYPE_MAP, lower=True),
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -32,9 +25,10 @@ CONFIG_SCHEMA = (
 
 async def to_code(config):
     parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    target_cls = config[CONF_TYPE]
-    var = cg.new_Pvariable(config[CONF_ID].with_type(target_cls))
+    var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-    await switch.register_switch(var, config)
+    await select.register_select(
+        var, config, options=["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
+    )
     cg.add(var.set_parent(parent))
     cg.add(var.set_zone(config[CONF_ZONE]))

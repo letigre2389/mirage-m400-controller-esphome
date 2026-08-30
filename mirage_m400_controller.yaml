@@ -21,11 +21,19 @@ wifi:
 captive_portal:
 
 logger:
-  level: DEBUG
+  level: DEBUG   # keep at DEBUG while you verify zone offset / framing, then dial back
 
 api:
   encryption:
     key: !secret api_encryption_key
+  services:
+    - service: send_mirage_command
+      variables:
+        command: string
+      then:
+        - lambda: |-
+            id(mirage_m400_device)->send_raw_command(command);
+            ESP_LOGI("mirage_service", "Sent command: %s", command.c_str());
 
 ota:
 
@@ -39,8 +47,13 @@ uart:
     stop_bits: 1
 
 mirage_m400:
-  uart_id: mirage_uart
   id: mirage_m400_device
+  uart_id: mirage_uart
+  # If Zone 1 commands actually land on what the amp calls "Zone 2" (or vice
+  # versa), flip this to 1. See README "Zone Addressing" section.
+  zone_offset: 0
+  zone_count: 4
+  poll_interval: 15s
 
 text_sensor:
   - platform: mirage_m400
@@ -58,7 +71,6 @@ switch:
     zone: 1
     type: power
     icon: mdi:power
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 1 Mute"
@@ -75,7 +87,6 @@ switch:
     zone: 2
     type: power
     icon: mdi:power
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 2 Mute"
@@ -92,7 +103,6 @@ switch:
     zone: 3
     type: power
     icon: mdi:power
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 3 Mute"
@@ -109,7 +119,6 @@ switch:
     zone: 4
     type: power
     icon: mdi:power
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 4 Mute"
@@ -124,29 +133,48 @@ number:
     name: "Zone 1 Volume"
     id: zone1_volume
     zone: 1
-    unit_of_measurement: "%"
     icon: mdi:volume-high
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 2 Volume"
     id: zone2_volume
     zone: 2
-    unit_of_measurement: "%"
     icon: mdi:volume-high
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 3 Volume"
     id: zone3_volume
     zone: 3
-    unit_of_measurement: "%"
     icon: mdi:volume-high
-
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 4 Volume"
     id: zone4_volume
     zone: 4
-    unit_of_measurement: "%"
     icon: mdi:volume-high
+
+select:
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 1 Source"
+    id: zone1_source
+    zone: 1
+    icon: mdi:audio-input-rca
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 2 Source"
+    id: zone2_source
+    zone: 2
+    icon: mdi:audio-input-rca
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 3 Source"
+    id: zone3_source
+    zone: 3
+    icon: mdi:audio-input-rca
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 4 Source"
+    id: zone4_source
+    zone: 4
+    icon: mdi:audio-input-rca

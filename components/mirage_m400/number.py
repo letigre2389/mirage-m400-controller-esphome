@@ -1,29 +1,33 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import number
-from .constants import *
+from esphome.const import CONF_ID
 
-DEPENDENCIES = ["mirage_m400"]
+from . import CONF_MIRAGE_M400_ID, MirageM400Component, mirage_m400_ns
 
-mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
-MirageM400Number = mirage_m400_ns.class_(
-    "MirageM400Number", number.Number, cg.Component
+CONF_ZONE = "zone"
+
+MirageVolumeNumber = mirage_m400_ns.class_(
+    "MirageVolumeNumber", number.Number, cg.Component
 )
 
-CONFIG_SCHEMA = number.number_schema(MirageM400Number).extend({
-    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(mirage_m400_ns.class_("MirageM400Component")),
-    cv.Required(CONF_ZONE): cv.int_range(min=1, max=17),
-})
+CONFIG_SCHEMA = (
+    number.number_schema(MirageVolumeNumber)
+    .extend(
+        {
+            cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+            cv.Required(CONF_ZONE): cv.int_range(min=1, max=32),
+        }
+    )
+    .extend(cv.COMPONENT_SCHEMA)
+)
 
 
 async def to_code(config):
-    hub = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    var = cg.new_Pvariable(config[cv.CONF_ID], hub)
-    
-    await number.register_number(
-        var,
-        config,
-        min_value=0,
-        max_value=100,
-        step=1
-    )
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    var = cg.new_Pvariable(config[CONF_ID])
+    await cg.register_component(var, config)
+    # Protocol volume range is 0x00-0xA0 (0-160 decimal), integer steps.
+    await number.register_number(var, config, min_value=0, max_value=160, step=1)
+    cg.add(var.set_parent(parent))
+    cg.add(var.set_zone(config[CONF_ZONE]))

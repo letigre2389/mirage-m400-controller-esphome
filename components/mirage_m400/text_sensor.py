@@ -1,21 +1,17 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from .constants import *
 
-DEPENDENCIES = ["mirage_m400"]
+from . import CONF_MIRAGE_M400_ID, MirageM400Component
 
-mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")
-MirageM400TextSensor = mirage_m400_ns.class_(
-    "MirageM400TextSensor", text_sensor.TextSensor, cg.Component
+CONFIG_SCHEMA = text_sensor.text_sensor_schema().extend(
+    {
+        cv.GenerateID(CONF_MIRAGE_M400_ID): cv.use_id(MirageM400Component),
+    }
 )
-
-CONFIG_SCHEMA = text_sensor.text_sensor_schema(MirageM400TextSensor).extend({
-    cv.Required(CONF_MIRAGE_M400_ID): cv.use_id(mirage_m400_ns.class_("MirageM400Component")),
-})
 
 
 async def to_code(config):
-    hub = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
-    var = cg.new_Pvariable(config[cv.CONF_ID], hub)
-    await text_sensor.register_text_sensor(var, config)
+    parent = await cg.get_variable(config[CONF_MIRAGE_M400_ID])
+    var = await text_sensor.new_text_sensor(config)
+    cg.add(parent.set_last_response_text_sensor(var))
