@@ -50,9 +50,9 @@ uart:
 mirage_m400:
   id: mirage_m400_device
   uart_id: mirage_uart
-  # If Zone 1 commands actually land on what the amp calls "Zone 2" (or vice
-  # versa), flip this to 1. See README "Zone Addressing" section.
-  zone_offset: 0
+  # 1 = the protocol zone byte matches the amp's own zone numbers, so "zone: 1"
+  # below addresses Zone 1. See README "Zone Addressing" section.
+  zone_offset: 1
   zone_count: 4
   poll_interval: 15s
 

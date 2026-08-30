@@ -23,11 +23,11 @@ CONFIG_SCHEMA = (
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MirageM400Component),
-            # The manual's own protocol examples use "zone 0" as valid, which strongly
-            # suggests the wire protocol is 0-indexed while the amp's front panel / app
-            # label zones starting at 1. Default offset assumes physical Zone 1 ==
-            # protocol zone 0. If commands land on the wrong zone, try zone_offset: 1.
-            cv.Optional(CONF_ZONE_OFFSET, default=0): cv.int_range(min=0, max=31),
+            # protocol_zone = physical_zone - 1 + zone_offset. Confirmed on real
+            # hardware: the wire protocol is 1-indexed and matches the amp's own zone
+            # labels, so the default offset of 1 makes YAML "zone: 1" address Zone 1.
+            # (The manual's examples hinted at 0-indexing; the hardware disagrees.)
+            cv.Optional(CONF_ZONE_OFFSET, default=1): cv.int_range(min=0, max=31),
             cv.Optional(CONF_ZONE_COUNT, default=4): cv.int_range(min=1, max=32),
             cv.Optional(
                 CONF_POLL_INTERVAL, default="15s"

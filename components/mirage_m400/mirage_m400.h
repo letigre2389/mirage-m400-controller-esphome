@@ -107,15 +107,16 @@ class MirageStandbySwitch : public MirageSwitch {
  public:
   MirageCommand get_command() const override { return MirageCommand::STANDBY; }
 
-  // Standby data per the manual: 0x00 = Standby OFF (zone playing/powered on),
-  // 0x01 = Standby ON (zone powered off). This is the OPPOSITE of a naive
-  // "0=off, 1=on" power switch, and inverting it is the most likely reason
-  // your power switches weren't behaving.
-  void on_mirage_update(uint8_t data) override { this->publish_state(data == 0x00); }
+  // Standby data as the hardware actually behaves: 0x00 = zone powered off,
+  // 0x01 = zone powered on. The manual's table lists command 01 the other way
+  // round (00 = "Standby OFF"), but a real M-400 reports 0x00 for a zone that
+  // is off, so the byte reads as a plain power state. Both directions use the
+  // same encoding -- keep them in sync if you ever change one.
+  void on_mirage_update(uint8_t data) override { this->publish_state(data != 0x00); }
 
  protected:
   void write_state(bool state) override {
-    uint8_t data = state ? 0x00 : 0x01;
+    uint8_t data = state ? 0x01 : 0x00;
     this->parent_->send_command((uint8_t) MirageCommand::STANDBY, this->zone_, data);
     this->publish_state(state);
   }
