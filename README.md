@@ -108,6 +108,33 @@ number:
 Range is fixed at 0–160 to match the amp's protocol (see below) — no need to set
 `min_value`/`max_value`/`step` yourself.
 
+### Button (Volume Up / Down)
+
+```yaml
+button:
+  - platform: mirage_m400
+    name: "Zone 1 Volume Up"
+    type: volume_up
+    volume_id: zone1_volume   # id: of the matching number entity above
+    step: 5                  # optional, default 5, range 1-160
+  - platform: mirage_m400
+    name: "Zone 1 Volume Down"
+    type: volume_down
+    volume_id: zone1_volume
+    step: 5
+```
+
+Each button steps the paired `number` entity's value by `step` (clamped to
+0–160) through the same `make_call()` path Home Assistant uses for
+`number.set_value`, so it fires one VOLUME command and keeps the number
+entity's state in sync — no extra HA-side automation needed.
+
+This exists because Home Assistant's `number` domain (what the volume entity
+above shows up as) has no `increment`/`decrement` service — only `input_number`
+helpers do. These buttons give you an increment/decrement control directly,
+without having to create and sync a separate `input_number` helper per zone.
+Assign them to a dashboard, a physical remote's volume keys, or a script.
+
 ### Select (Source)
 
 ```yaml
@@ -119,6 +146,40 @@ select:
 ```
 
 Exposes S1–S8 as select options.
+
+#### Renaming or hiding sources
+
+```yaml
+select:
+  - platform: mirage_m400
+    mirage_m400_id: mirage_m400_device
+    name: "Zone 1 Source"
+    zone: 1
+    sources:
+      - name: "Apple TV"      # S1
+      - name: "Turntable"     # S2
+      - enabled: false        # S3 - hidden from the dropdown
+      - enabled: false        # S4
+      - enabled: false        # S5
+      - enabled: false        # S6
+      - enabled: false        # S7
+      - enabled: false        # S8
+```
+
+`sources` is a positional list: the first entry configures S1, the second S2,
+and so on. Each entry is optional — set `name` to relabel that input, `enabled:
+false` to remove it from this zone's dropdown, or omit the entry entirely to
+leave it as the default (`"Sn"`, enabled). Trailing sources you don't list stay
+at their defaults, so you only need to list as many entries as the last one you
+want to change.
+
+A hidden source is removed from the select's option list outright, which is
+also what makes it "not cycled": anything that steps through the entity's
+options — a Lovelace tile card's stepper, a physical remote's "next input"
+button mapped to `select.select_next` — walks the option list, so a hidden
+source is automatically skipped. If the amp is already on a hidden source when
+you apply this, the entity will briefly report a state outside its option
+list; select a visible source to clear it.
 
 ### Text Sensor (raw last response)
 
@@ -255,10 +316,11 @@ likely causes of "the ESP32 sends something but the amp doesn't do the right thi
 ```
 components/mirage_m400/
 ├── __init__.py          # Hub component registration & config schema
-├── mirage_m400.h         # Hub + switch/number/select entity class declarations
+├── mirage_m400.h         # Hub + switch/number/select/button entity class declarations
 ├── mirage_m400.cpp        # Hub implementation (UART TX/RX, parsing)
 ├── switch.py             # Power & Mute switches
 ├── number.py             # Volume control
-├── select.py             # Source selection
+├── select.py             # Source selection (rename/hide sources)
+├── button.py             # Volume Up/Down buttons
 └── text_sensor.py        # Raw last-response sensor
 ```

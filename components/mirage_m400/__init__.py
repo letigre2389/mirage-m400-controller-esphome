@@ -5,7 +5,7 @@ from esphome.const import CONF_ID
 
 CODEOWNERS = ["@letigre2389"]
 DEPENDENCIES = ["uart"]
-AUTO_LOAD = ["switch", "number", "select", "text_sensor"]
+AUTO_LOAD = ["switch", "number", "select", "text_sensor", "button"]
 MULTI_CONF = True
 
 mirage_m400_ns = cg.esphome_ns.namespace("mirage_m400")

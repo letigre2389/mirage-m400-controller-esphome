@@ -161,6 +161,17 @@ select:
     id: zone1_source
     zone: 1
     icon: mdi:audio-input-rca
+    # Example: rename S1/S2 and hide S3-S8 from this zone's dropdown. Each
+    # entry maps positionally to S1, S2, S3, ... - see README "Select (Source)".
+    sources:
+      - name: "Apple TV"
+      - name: "Turntable"
+      - enabled: false
+      - enabled: false
+      - enabled: false
+      - enabled: false
+      - enabled: false
+      - enabled: false
   - platform: mirage_m400
     mirage_m400_id: mirage_m400_device
     name: "Zone 2 Source"
@@ -179,3 +190,60 @@ select:
     id: zone4_source
     zone: 4
     icon: mdi:audio-input-rca
+
+button:
+  # Zone 1
+  - platform: mirage_m400
+    name: "Zone 1 Volume Up"
+    type: volume_up
+    volume_id: zone1_volume
+    step: 5
+    icon: mdi:volume-plus
+  - platform: mirage_m400
+    name: "Zone 1 Volume Down"
+    type: volume_down
+    volume_id: zone1_volume
+    step: 5
+    icon: mdi:volume-minus
+
+  # Zone 2
+  - platform: mirage_m400
+    name: "Zone 2 Volume Up"
+    type: volume_up
+    volume_id: zone2_volume
+    step: 5
+    icon: mdi:volume-plus
+  - platform: mirage_m400
+    name: "Zone 2 Volume Down"
+    type: volume_down
+    volume_id: zone2_volume
+    step: 5
+    icon: mdi:volume-minus
+
+  # Zone 3
+  - platform: mirage_m400
+    name: "Zone 3 Volume Up"
+    type: volume_up
+    volume_id: zone3_volume
+    step: 5
+    icon: mdi:volume-plus
+  - platform: mirage_m400
+    name: "Zone 3 Volume Down"
+    type: volume_down
+    volume_id: zone3_volume
+    step: 5
+    icon: mdi:volume-minus
+
+  # Zone 4
+  - platform: mirage_m400
+    name: "Zone 4 Volume Up"
+    type: volume_up
+    volume_id: zone4_volume
+    step: 5
+    icon: mdi:volume-plus
+  - platform: mirage_m400
+    name: "Zone 4 Volume Down"
+    type: volume_down
+    volume_id: zone4_volume
+    step: 5
+    icon: mdi:volume-minus

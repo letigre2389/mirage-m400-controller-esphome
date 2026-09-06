@@ -6,6 +6,7 @@
 #include "esphome/components/switch/switch.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/select/select.h"
+#include "esphome/components/button/button.h"
 
 #include <vector>
 #include <string>
@@ -166,24 +167,28 @@ class MirageVolumeNumber : public number::Number, public Component, public Mirag
 
 // ---------------------------------------------------------------------------
 // Select entity: Source (S1-S8). Uses the amp's non-sequential data bytes,
-// see MIRAGE_SOURCE_DATA above.
+// see MIRAGE_SOURCE_DATA above. Each instance carries its own display names
+// (default "S1".."S8", overridable per zone via the "sources:" YAML option),
+// mapped positionally to the S1-S8 protocol data bytes.
 // ---------------------------------------------------------------------------
 
 class MirageSourceSelect : public select::Select, public Component, public MirageM400Listener {
  public:
   void set_parent(MirageM400Component *parent) { this->parent_ = parent; }
   void set_zone(uint8_t zone) { this->zone_ = zone; }
+  void set_source_names(std::vector<std::string> names) { this->source_names_ = std::move(names); }
   void setup() override { this->parent_->register_listener(this); }
 
   uint8_t get_zone() const override { return this->zone_; }
   MirageCommand get_command() const override { return MirageCommand::SOURCE; }
 
   void on_mirage_update(uint8_t data) override {
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint8_t i = 0; i < this->source_names_.size(); i++) {
       if (MIRAGE_SOURCE_DATA[i] == data) {
-        char buf[4];
-        snprintf(buf, sizeof(buf), "S%u", (unsigned) (i + 1));
-        this->publish_state(std::string(buf));
+        // Published even if this source was disabled (removed from the option
+        // list) in config -- an amp currently on a disabled source still needs
+        // a state to report.
+        this->publish_state(this->source_names_[i]);
         return;
       }
     }
@@ -191,18 +196,60 @@ class MirageSourceSelect : public select::Select, public Component, public Mirag
 
  protected:
   void control(const std::string &value) override {
-    if (value.size() < 2 || value[0] != 'S')
-      return;
-    int idx = atoi(value.c_str() + 1) - 1;
-    if (idx < 0 || idx > 7)
-      return;
-    uint8_t data = MIRAGE_SOURCE_DATA[idx];
-    this->parent_->send_command((uint8_t) MirageCommand::SOURCE, this->zone_, data);
-    this->publish_state(value);
+    for (uint8_t i = 0; i < this->source_names_.size(); i++) {
+      if (this->source_names_[i] == value) {
+        this->parent_->send_command((uint8_t) MirageCommand::SOURCE, this->zone_, MIRAGE_SOURCE_DATA[i]);
+        this->publish_state(value);
+        return;
+      }
+    }
   }
 
   MirageM400Component *parent_{nullptr};
   uint8_t zone_{1};
+  std::vector<std::string> source_names_{"S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"};
+};
+
+// ---------------------------------------------------------------------------
+// Button entities: Volume Up / Down. Each button is paired with a
+// MirageVolumeNumber and steps its value through the normal number
+// control()/make_call() path, so a press behaves exactly like an HA
+// number.set_value call (single VOLUME command, state stays in sync).
+// ---------------------------------------------------------------------------
+
+class MirageVolumeButton : public button::Button, public Component {
+ public:
+  void set_number(number::Number *number) { this->number_ = number; }
+  void set_step(float step) { this->step_ = step; }
+
+ protected:
+  void press_action() override {
+    if (this->number_ == nullptr)
+      return;
+    float value = this->number_->state + this->step_direction_() * this->step_;
+    float min = this->number_->traits.get_min_value();
+    float max = this->number_->traits.get_max_value();
+    if (value < min)
+      value = min;
+    if (value > max)
+      value = max;
+    this->number_->make_call().set_value(value).perform();
+  }
+
+  virtual float step_direction_() const = 0;
+
+  number::Number *number_{nullptr};
+  float step_{5};
+};
+
+class MirageVolumeUpButton : public MirageVolumeButton {
+ protected:
+  float step_direction_() const override { return 1.0f; }
+};
+
+class MirageVolumeDownButton : public MirageVolumeButton {
+ protected:
+  float step_direction_() const override { return -1.0f; }
 };
 
 }  // namespace mirage_m400
